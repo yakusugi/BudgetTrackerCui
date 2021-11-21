@@ -2,6 +2,9 @@ package com.jdbc.budgettracker.main;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,76 +15,121 @@ import com.jdbc.budgettracker.dao.BudgetTrackerDao;
 
 public class BudgetTrackerMain {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        // TODO Auto-generated method stub
-        BudgetTrackerDao budgetTrackerDao;
+	@SuppressWarnings("null")
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+		// TODO Auto-generated method stub
+		BudgetTrackerDao budgetTrackerDao = null;
+		BudgetTrackerDto budgetTrackerDto = null;
 
-        Map<Integer, String> initialSwitchMap = new HashMap<>();
-        initialSwitchMap.put(1, "Select");
-        initialSwitchMap.put(2, "Insert");
-        initialSwitchMap.put(3, "Update");
-        initialSwitchMap.put(4, "Delete");
+		Map<Integer, String> initialSwitchMap = new HashMap<>();
+		initialSwitchMap.put(1, "Select");
+		initialSwitchMap.put(2, "Insert");
+		initialSwitchMap.put(3, "Update");
+		initialSwitchMap.put(4, "Delete");
 
-        Scanner initialSwitchScanner = new Scanner(System.in);
-        int initialNumInt = 0;
-        do {
-            // String[] initialList = new String[] {initialSwitchMap.get(1),
-            // initialSwitchMap.get(2), initialSwitchMap.get(3), initialSwitchMap.get(4)};
+		Scanner initialSwitchScanner = new Scanner(System.in);
+		int initialNumInt = 0;
+		do {
+			// String[] initialList = new String[] {initialSwitchMap.get(1),
+			// initialSwitchMap.get(2), initialSwitchMap.get(3), initialSwitchMap.get(4)};
 
-            for (Map.Entry<Integer, String> list : initialSwitchMap.entrySet()) {
-                System.out.println(list.getKey() + ":" + list.getValue());
-            }
+			for (Map.Entry<Integer, String> list : initialSwitchMap.entrySet()) {
+				System.out.println(list.getKey() + ":" + list.getValue());
+			}
 
-            System.out.print("Select a number: ");
-            String initialNumStr = initialSwitchScanner.next();
-            initialNumInt = Integer.parseInt(initialNumStr);
+			System.out.print("Select a number: ");
+			String initialNumStr = initialSwitchScanner.next();
+			initialNumInt = Integer.parseInt(initialNumStr);
 
-        } while (initialNumInt >= 5 || initialNumInt <= 0);
+		} while (initialNumInt >= 5 || initialNumInt <= 0);
 
-        switch (initialNumInt) {
-        case 1:
-            // Select
-            System.out.println("You chose " + initialSwitchMap.get(1));
-            budgetTrackerDao = new BudgetTrackerDao();
-            Map<Integer, String> selectSwitchMap = new HashMap<>();
-            selectSwitchMap.put(1, "Select All");
-            selectSwitchMap.put(2, "Select by Date");
-            selectSwitchMap.put(3, "Select by Store");
-            selectSwitchMap.put(4, "Select by Product");
-            selectSwitchMap.put(5, "Select by Type");
-            selectSwitchMap.put(6, "Select by Price");
+		switch (initialNumInt) {
+		case 1:
+			// Select
+			System.out.println("You chose " + initialSwitchMap.get(1));
+			budgetTrackerDao = new BudgetTrackerDao();
+			Map<Integer, String> selectSwitchMap = new HashMap<>();
+			selectSwitchMap.put(1, "Select All");
+			selectSwitchMap.put(2, "Select by Date");
+			selectSwitchMap.put(3, "Select by Store");
+			selectSwitchMap.put(4, "Select by Product");
+			selectSwitchMap.put(5, "Select by Type");
+			selectSwitchMap.put(6, "Select by Price");
 
-            Scanner selectScanner = new Scanner(System.in);
-            int selectScannerNumInt = 0;
-            do {
-                // String[] selectScanList = new String[] {selectSwitchMap.get(1),
-                // selectSwitchMap.get(2), selectSwitchMap.get(3), selectSwitchMap.get(4),
-                // selectSwitchMap.get(5)};
+			Scanner selectScanner = new Scanner(System.in);
+			int selectScannerNumInt = 0;
+			do {
+				// String[] selectScanList = new String[] {selectSwitchMap.get(1),
+				// selectSwitchMap.get(2), selectSwitchMap.get(3), selectSwitchMap.get(4),
+				// selectSwitchMap.get(5)};
 
-                for (Map.Entry<Integer, String> selectScanlist : selectSwitchMap.entrySet()) {
-                    System.out.println(selectScanlist.getKey() + ":" + selectScanlist.getValue());
-                }
+				for (Map.Entry<Integer, String> selectScanlist : selectSwitchMap.entrySet()) {
+					System.out.println(selectScanlist.getKey() + ":" + selectScanlist.getValue());
+				}
 
-                System.out.print("Select a number: ");
-                String selectScannerNumStr = selectScanner.next();
-                selectScannerNumInt = Integer.parseInt(selectScannerNumStr);
+				System.out.print("Select a number: ");
+				String selectScannerNumStr = selectScanner.next();
+				selectScannerNumInt = Integer.parseInt(selectScannerNumStr);
 
-            } while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
+			} while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
 
-            do {
-                if (selectScannerNumInt == 1) {
-                    System.out.println("Select All----------");
-                    List<BudgetTrackerDto> btd = budgetTrackerDao.selectAll();
-                    for (BudgetTrackerDto b : btd) {
-                        System.out.println(b.getDate() + ", " + b.getStoreName() + ", " + b.getProductName() + ", "
-                                + b.getProductType() + ", " + b.getPrice());
-                    }
+			do {
+				if (selectScannerNumInt == 1) {
+					System.out.println("Select All----------");
+					List<BudgetTrackerDto> btd = budgetTrackerDao.selectAll();
+					for (BudgetTrackerDto b : btd) {
+						System.out.println(b.getId() + ", " + b.getDate() + ", " + b.getStoreName() + ", "
+								+ b.getProductName() + ", " + b.getProductType() + ", " + b.getPrice());
+					}
 
-                }
+				}
 
-            } while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
-            break;
+			} while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
+			break;
+		case 2:
+			// Insert
+			int insertcannerInt = 0;
+			System.out.println("You chose " + initialSwitchMap.get(2));
 
-        }
-    }
+			Scanner insertScanner = new Scanner(System.in);
+			System.out.print("Input an ID: ");
+			int insertScannerInt = insertScanner.nextInt();
+			System.out.println(insertScannerInt);
+//			insertcannerInt = Integer.parseInt(insertScannerStr);
+//			System.out.println(insertcannerInt);
+			budgetTrackerDto.setId(insertScannerInt);
+			
+			System.out.print("Input Date (yyyy-MM-dd): ");
+			String insertScannerStr = insertScanner.next();
+			insertScannerStr = insertScanner.next();
+			Date insertDate=(Date) new SimpleDateFormat("yyyy-MM-dd").parse(insertScannerStr);  
+			budgetTrackerDto.setDate(insertDate);
+			
+			System.out.print("Input a store name: ");
+			insertScannerStr = insertScanner.next();
+			budgetTrackerDto.setStoreName(insertScannerStr);
+			
+			System.out.print("Input a product name: ");
+			insertScannerStr = insertScanner.next();
+			budgetTrackerDto.setProductName(insertScannerStr);
+			
+			System.out.print("Input a product type: ");
+			insertScannerStr = insertScanner.next();
+			budgetTrackerDto.setProductType(insertScannerStr);
+			
+			System.out.print("Input price: ");
+			insertScannerStr = insertScanner.next();
+			insertcannerInt = Integer.parseInt(insertScannerStr);
+//			System.out.println(insertcannerInt);
+			budgetTrackerDto.setPrice(insertcannerInt);
+			
+			budgetTrackerDao.insertIntoTable(budgetTrackerDto);
+
+			
+			
+			
+
+		}
+
+	}
 }

@@ -26,6 +26,7 @@ public class BudgetTrackerMain {
 		initialSwitchMap.put(2, "Insert");
 		initialSwitchMap.put(3, "Update");
 		initialSwitchMap.put(4, "Delete");
+		initialSwitchMap.put(5, "Test");
 
 		Scanner initialSwitchScanner = new Scanner(System.in);
 		int initialNumInt = 0;

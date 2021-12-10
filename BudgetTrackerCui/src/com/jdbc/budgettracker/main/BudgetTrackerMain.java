@@ -2,7 +2,7 @@ package com.jdbc.budgettracker.main;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -27,7 +27,6 @@ public class BudgetTrackerMain {
 		initialSwitchMap.put(3, "Update");
 		initialSwitchMap.put(4, "Delete");
 		initialSwitchMap.put(5, "Test");
-
 		Scanner initialSwitchScanner = new Scanner(System.in);
 		int initialNumInt = 0;
 		do {
@@ -91,6 +90,7 @@ public class BudgetTrackerMain {
 			// Insert
 			int insertcannerInt = 0;
 			System.out.println("You chose " + initialSwitchMap.get(2));
+			budgetTrackerDto = new BudgetTrackerDto();
 
 			Scanner insertScanner = new Scanner(System.in);
 			System.out.print("Input an ID: ");
@@ -102,7 +102,7 @@ public class BudgetTrackerMain {
 			
 			System.out.print("Input Date (yyyy-MM-dd): ");
 			String insertScannerStr = insertScanner.next();
-			insertScannerStr = insertScanner.next();
+//			insertScannerStr = insertScanner.next();
 			Date insertDate=(Date) new SimpleDateFormat("yyyy-MM-dd").parse(insertScannerStr);  
 			budgetTrackerDto.setDate(insertDate);
 			
@@ -124,11 +124,8 @@ public class BudgetTrackerMain {
 //			System.out.println(insertcannerInt);
 			budgetTrackerDto.setPrice(insertcannerInt);
 			
+			budgetTrackerDao = new BudgetTrackerDao();
 			budgetTrackerDao.insertIntoTable(budgetTrackerDto);
-
-			
-			
-			
 
 		}
 

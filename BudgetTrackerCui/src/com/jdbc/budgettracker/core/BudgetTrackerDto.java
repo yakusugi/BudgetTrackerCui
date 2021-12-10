@@ -1,6 +1,6 @@
 package com.jdbc.budgettracker.core;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class BudgetTrackerDto {
     private int id;
@@ -35,8 +35,8 @@ public class BudgetTrackerDto {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date insertDate) {
+        this.date = insertDate;
     }
 
     public String getStoreName() {

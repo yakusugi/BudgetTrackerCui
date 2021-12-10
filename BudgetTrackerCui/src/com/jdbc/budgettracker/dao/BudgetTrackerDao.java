@@ -43,6 +43,7 @@ public class BudgetTrackerDao {
 
 	public List<BudgetTrackerDto> selectAll() throws FileNotFoundException, IOException {
 		List<BudgetTrackerDto> budgetList = new ArrayList<>();
+		
 
 		try (Connection conn = BudgetTrackerDao.getConnection(); PreparedStatement ps = conn.prepareStatement(SQL)) {
 
@@ -71,6 +72,7 @@ public class BudgetTrackerDao {
 	// Insert
 	public int insertIntoTable(BudgetTrackerDto budgetTrackerDto) {
 		int rowsCount = 0;
+		btd = new BudgetTrackerDto();
 
 		String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) " + "VALUES('"
 				+ btd.getId() + "','" + btd.getStoreName() + "'," + btd.getProductName() + "'," + btd.getProductType()

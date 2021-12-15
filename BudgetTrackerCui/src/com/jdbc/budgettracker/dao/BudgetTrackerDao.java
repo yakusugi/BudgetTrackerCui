@@ -8,7 +8,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Time;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -18,9 +19,10 @@ import com.jdbc.budgettracker.core.BudgetTrackerDto;
 public class BudgetTrackerDao {
 	BudgetTrackerDto btd;
 	private Connection myConn;
-	private Statement mySmt;
+	private PreparedStatement mySmt;
 
-	private static final String SQL = "select * from budget_table;";
+	private static final String SELECTALL = "select * from budget_table;";
+//	private static final String SELECTBYSTORENAME = "select * from budget_table where store name = ?;";
 
 	private static Connection getConnection() {
 
@@ -41,11 +43,12 @@ public class BudgetTrackerDao {
 		}
 	}
 
+	// select all
 	public List<BudgetTrackerDto> selectAll() throws FileNotFoundException, IOException {
 		List<BudgetTrackerDto> budgetList = new ArrayList<>();
-		
 
-		try (Connection conn = BudgetTrackerDao.getConnection(); PreparedStatement ps = conn.prepareStatement(SQL)) {
+		try (Connection conn = BudgetTrackerDao.getConnection();
+				PreparedStatement ps = conn.prepareStatement(SELECTALL)) {
 
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
@@ -69,21 +72,38 @@ public class BudgetTrackerDao {
 		return budgetList;
 	}
 
-	// Insert
-	public int insertIntoTable(BudgetTrackerDto budgetTrackerDto) {
+
+	public int insertIntoTable(BudgetTrackerDto btd) throws SQLException {
 		int rowsCount = 0;
-		btd = new BudgetTrackerDto();
-
-		String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) " + "VALUES('"
-				+ btd.getId() + "','" + btd.getStoreName() + "'," + btd.getProductName() + "'," + btd.getProductType()
-				+ "'," + btd.getPrice() + ")";
-
+		
+		PreparedStatement pstmt;
 		try {
 			// DBに接続
 			myConn = BudgetTrackerDao.getConnection();
-			mySmt = myConn.createStatement();
+//			pstmt = (PreparedStatement) myConn.createStatement();
+
+//		String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) " + "VALUE('"
+//				+ btd.getId() + "','" + btd.getDate() + "','" + btd.getStoreName() + "','" + btd.getProductName() + "','" + btd.getProductType()
+//				+ "','" + btd.getPrice() + "')";
+
+			String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) " + "VALUE (?,?,?,?,?,?)";
+
+			pstmt = myConn.prepareStatement(sql);
+			pstmt.setInt(1, btd.getId());
+			Date date = btd.getDate();
+	        long timeInMilliSeconds = date.getTime();
+	        java.sql.Date date1 = new java.sql.Date(timeInMilliSeconds);
+			pstmt.setDate(2, date1);
+			pstmt.setString(3, btd.getStoreName());
+			pstmt.setString(4, btd.getProductName());
+			pstmt.setString(5, btd.getProductType());
+			pstmt.setInt(6, btd.getPrice());
 			// SQL文発行
-			rowsCount = mySmt.executeUpdate(sql);
+			pstmt.executeUpdate();
+			System.out.println("Suucessfully added");
+			pstmt.close();
+
+			//rowsCount = pstmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			System.out.println("Errorが発生しました！\n" + e + "\n");
 		} finally {

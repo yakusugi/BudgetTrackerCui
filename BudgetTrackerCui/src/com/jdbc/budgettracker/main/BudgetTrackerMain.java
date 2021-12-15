@@ -2,6 +2,7 @@ package com.jdbc.budgettracker.main;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +17,7 @@ import com.jdbc.budgettracker.dao.BudgetTrackerDao;
 public class BudgetTrackerMain {
 
 	@SuppressWarnings("null")
-	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException, SQLException {
 		// TODO Auto-generated method stub
 		BudgetTrackerDao budgetTrackerDao = null;
 		BudgetTrackerDto budgetTrackerDto = null;
@@ -82,6 +83,12 @@ public class BudgetTrackerMain {
 								+ b.getProductName() + ", " + b.getProductType() + ", " + b.getPrice());
 					}
 
+				} else if (selectScannerNumInt == 3) {
+					System.out.println("Select by Store ----------");
+					Scanner storeSelectScanner = new Scanner(System.in);
+					System.out.print("Input a store name: ");
+					String storeSelectScannerStr = storeSelectScanner.next();
+					
 				}
 
 			} while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
@@ -95,14 +102,10 @@ public class BudgetTrackerMain {
 			Scanner insertScanner = new Scanner(System.in);
 			System.out.print("Input an ID: ");
 			int insertScannerInt = insertScanner.nextInt();
-			System.out.println(insertScannerInt);
-//			insertcannerInt = Integer.parseInt(insertScannerStr);
-//			System.out.println(insertcannerInt);
 			budgetTrackerDto.setId(insertScannerInt);
 			
 			System.out.print("Input Date (yyyy-MM-dd): ");
 			String insertScannerStr = insertScanner.next();
-//			insertScannerStr = insertScanner.next();
 			Date insertDate=(Date) new SimpleDateFormat("yyyy-MM-dd").parse(insertScannerStr);  
 			budgetTrackerDto.setDate(insertDate);
 			
@@ -121,7 +124,6 @@ public class BudgetTrackerMain {
 			System.out.print("Input price: ");
 			insertScannerStr = insertScanner.next();
 			insertcannerInt = Integer.parseInt(insertScannerStr);
-//			System.out.println(insertcannerInt);
 			budgetTrackerDto.setPrice(insertcannerInt);
 			
 			budgetTrackerDao = new BudgetTrackerDao();

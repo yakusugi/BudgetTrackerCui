@@ -22,7 +22,7 @@ public class BudgetTrackerDao {
 	private PreparedStatement mySmt;
 
 	private static final String SELECTALL = "select * from budget_table;";
-//	private static final String SELECTBYSTORENAME = "select * from budget_table where store name = ?;";
+	private static final String SELECTBYSTORENAME = "select * from budget_table where storeName = ?;";
 
 	private static Connection getConnection() {
 
@@ -72,28 +72,53 @@ public class BudgetTrackerDao {
 		return budgetList;
 	}
 
+	public List<BudgetTrackerDto> selectByStoreName(BudgetTrackerDto btd) throws FileNotFoundException, IOException {
+		List<BudgetTrackerDto> budgetList = new ArrayList<>();
+
+		try (Connection conn = BudgetTrackerDao.getConnection();
+				PreparedStatement ps = conn.prepareStatement(SELECTBYSTORENAME)) {
+//			BudgetTrackerDto btd = new BudgetTrackerDto();
+			ps.setString(1, btd.getStoreName());
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+
+					btd = new BudgetTrackerDto();
+					btd.setId(rs.getInt("ID"));
+					btd.setDate(rs.getDate("Date"));
+					btd.setStoreName(rs.getString("StoreName"));
+					btd.setProductName(rs.getString("ProductName"));
+					btd.setProductType(rs.getString("ProductType"));
+					btd.setPrice(rs.getInt("Price"));
+
+					budgetList.add(btd);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return budgetList;
+	}
 
 	public int insertIntoTable(BudgetTrackerDto btd) throws SQLException {
 		int rowsCount = 0;
-		
+
 		PreparedStatement pstmt;
 		try {
 			// DBに接続
 			myConn = BudgetTrackerDao.getConnection();
-//			pstmt = (PreparedStatement) myConn.createStatement();
 
-//		String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) " + "VALUE('"
-//				+ btd.getId() + "','" + btd.getDate() + "','" + btd.getStoreName() + "','" + btd.getProductName() + "','" + btd.getProductType()
-//				+ "','" + btd.getPrice() + "')";
-
-			String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) " + "VALUE (?,?,?,?,?,?)";
+			String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) "
+					+ "VALUE (?,?,?,?,?,?)";
 
 			pstmt = myConn.prepareStatement(sql);
 			pstmt.setInt(1, btd.getId());
 			Date date = btd.getDate();
-	        long timeInMilliSeconds = date.getTime();
-	        java.sql.Date date1 = new java.sql.Date(timeInMilliSeconds);
-			pstmt.setDate(2, date1);
+			long timeInMilliSeconds = date.getTime();
+			java.sql.Date sqlDate = new java.sql.Date(timeInMilliSeconds);
+			pstmt.setDate(2, sqlDate);
 			pstmt.setString(3, btd.getStoreName());
 			pstmt.setString(4, btd.getProductName());
 			pstmt.setString(5, btd.getProductType());
@@ -103,7 +128,7 @@ public class BudgetTrackerDao {
 			System.out.println("Suucessfully added");
 			pstmt.close();
 
-			//rowsCount = pstmt.executeUpdate(sql);
+			// rowsCount = pstmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			System.out.println("Errorが発生しました！\n" + e + "\n");
 		} finally {

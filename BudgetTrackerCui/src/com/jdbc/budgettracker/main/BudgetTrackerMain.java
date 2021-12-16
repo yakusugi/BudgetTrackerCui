@@ -88,6 +88,13 @@ public class BudgetTrackerMain {
 					Scanner storeSelectScanner = new Scanner(System.in);
 					System.out.print("Input a store name: ");
 					String storeSelectScannerStr = storeSelectScanner.next();
+					budgetTrackerDto = new BudgetTrackerDto();
+					budgetTrackerDto.setStoreName(storeSelectScannerStr);
+					List<BudgetTrackerDto> btd = budgetTrackerDao.selectByStoreName(budgetTrackerDto);
+					for (BudgetTrackerDto b : btd) {
+						System.out.println(b.getId() + ", " + b.getDate() + ", " + b.getStoreName() + ", "
+								+ b.getProductName() + ", " + b.getProductType() + ", " + b.getPrice());
+					}
 					
 				}
 

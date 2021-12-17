@@ -83,10 +83,33 @@ public class BudgetTrackerMain {
 								+ b.getProductName() + ", " + b.getProductType() + ", " + b.getPrice());
 					}
 
+				} else if (selectScannerNumInt == 2) {
+					System.out.println("Select by date ----------");
+					System.out.print("Input Date 1 (yyyy-MM-dd): ");
+					Scanner selectByDateScanner = new Scanner(System.in);
+					String selectByDateScannerStr1 = selectByDateScanner.next();
+//					Date selectByDateScannerDate1=(Date) new SimpleDateFormat("yyyy-MM-dd").parse(selectByDateScannerStr1);
+					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(selectByDateScannerStr1);
+					System.out.println(selectByDateScannerStr1);
+					budgetTrackerDto = new BudgetTrackerDto();
+					budgetTrackerDto.setDate(date1);
+
+					System.out.print("Input Date 2 (yyyy-MM-dd): ");
+//					Scanner selectByDateScanner = new Scanner(System.in);
+					String selectByDateScannerStr2 = selectByDateScanner.next();
+//					Date selectByDateScannerDate2=(Date) new SimpleDateFormat("yyyy-MM-dd").parse(selectByDateScannerStr2);
+					Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(selectByDateScannerStr2);
+					System.out.println(selectByDateScannerStr2);
+					budgetTrackerDto.setDate2(date2);
+					budgetTrackerDao = new BudgetTrackerDao();
+					budgetTrackerDao.selectByDates(budgetTrackerDto);
+
+//					budgetTrackerDto.setDate(insertDate);
+
 				} else if (selectScannerNumInt == 3) {
 					System.out.println("Select by Store ----------");
 					Scanner storeSelectScanner = new Scanner(System.in);
-					System.out.print("Input a store name: ");
+					System.out.print("Input a product name: ");
 					String storeSelectScannerStr = storeSelectScanner.next();
 					budgetTrackerDto = new BudgetTrackerDto();
 					budgetTrackerDto.setStoreName(storeSelectScannerStr);
@@ -95,7 +118,20 @@ public class BudgetTrackerMain {
 						System.out.println(b.getId() + ", " + b.getDate() + ", " + b.getStoreName() + ", "
 								+ b.getProductName() + ", " + b.getProductType() + ", " + b.getPrice());
 					}
-					
+
+				} else if (selectScannerNumInt == 4) {
+					System.out.println("Select by Product ----------");
+					Scanner productSelectScanner = new Scanner(System.in);
+					System.out.print("Input a product name: ");
+					String productSelectScannerStr = productSelectScanner.next();
+					budgetTrackerDto = new BudgetTrackerDto();
+					budgetTrackerDto.setProductName(productSelectScannerStr);
+					List<BudgetTrackerDto> btd = budgetTrackerDao.selectByProductName(budgetTrackerDto);
+					for (BudgetTrackerDto b : btd) {
+						System.out.println(b.getId() + ", " + b.getDate() + ", " + b.getStoreName() + ", "
+								+ b.getProductName() + ", " + b.getProductType() + ", " + b.getPrice());
+					}
+
 				}
 
 			} while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
@@ -110,29 +146,29 @@ public class BudgetTrackerMain {
 			System.out.print("Input an ID: ");
 			int insertScannerInt = insertScanner.nextInt();
 			budgetTrackerDto.setId(insertScannerInt);
-			
+
 			System.out.print("Input Date (yyyy-MM-dd): ");
 			String insertScannerStr = insertScanner.next();
-			Date insertDate=(Date) new SimpleDateFormat("yyyy-MM-dd").parse(insertScannerStr);  
+			Date insertDate = (Date) new SimpleDateFormat("yyyy-MM-dd").parse(insertScannerStr);
 			budgetTrackerDto.setDate(insertDate);
-			
+
 			System.out.print("Input a store name: ");
 			insertScannerStr = insertScanner.next();
 			budgetTrackerDto.setStoreName(insertScannerStr);
-			
+
 			System.out.print("Input a product name: ");
 			insertScannerStr = insertScanner.next();
 			budgetTrackerDto.setProductName(insertScannerStr);
-			
+
 			System.out.print("Input a product type: ");
 			insertScannerStr = insertScanner.next();
 			budgetTrackerDto.setProductType(insertScannerStr);
-			
+
 			System.out.print("Input price: ");
 			insertScannerStr = insertScanner.next();
 			insertcannerInt = Integer.parseInt(insertScannerStr);
 			budgetTrackerDto.setPrice(insertcannerInt);
-			
+
 			budgetTrackerDao = new BudgetTrackerDao();
 			budgetTrackerDao.insertIntoTable(budgetTrackerDto);
 

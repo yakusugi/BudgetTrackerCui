@@ -23,6 +23,9 @@ public class BudgetTrackerDao {
 
 	private static final String SELECTALL = "select * from budget_table;";
 	private static final String SELECTBYSTORENAME = "select * from budget_table where storeName = ?;";
+	private static final String SELECTBYPRODUCTNAME = "select * from budget_table where productName = ?;";
+	private static final String SELECTBYDATES = "SELECT * FROM budget_table WHERE Date >= ? AND Date <= ?;";
+	private static final String INSERTINTOBUDGETTABLE = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) VALUE (?,?,?,?,?,?);";
 
 	private static Connection getConnection() {
 
@@ -76,9 +79,74 @@ public class BudgetTrackerDao {
 		List<BudgetTrackerDto> budgetList = new ArrayList<>();
 
 		try (Connection conn = BudgetTrackerDao.getConnection();
-				PreparedStatement ps = conn.prepareStatement(SELECTBYSTORENAME)) {
-//			BudgetTrackerDto btd = new BudgetTrackerDto();
+			PreparedStatement ps = conn.prepareStatement(SELECTBYSTORENAME)) {
 			ps.setString(1, btd.getStoreName());
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+
+					btd = new BudgetTrackerDto();
+					btd.setId(rs.getInt("ID"));
+					btd.setDate(rs.getDate("Date"));
+					btd.setStoreName(rs.getString("StoreName"));
+					btd.setProductName(rs.getString("ProductName"));
+					btd.setProductType(rs.getString("ProductType"));
+					btd.setPrice(rs.getInt("Price"));
+
+					budgetList.add(btd);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return budgetList;
+	}
+	
+	public List<BudgetTrackerDto> selectByProductName(BudgetTrackerDto btd) throws FileNotFoundException, IOException {
+		List<BudgetTrackerDto> budgetList = new ArrayList<>();
+
+		try (Connection conn = BudgetTrackerDao.getConnection();
+			PreparedStatement ps = conn.prepareStatement(SELECTBYPRODUCTNAME)) {
+			ps.setString(1, btd.getProductName());
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+
+					btd = new BudgetTrackerDto();
+					btd.setId(rs.getInt("ID"));
+					btd.setDate(rs.getDate("Date"));
+					btd.setStoreName(rs.getString("StoreName"));
+					btd.setProductName(rs.getString("ProductName"));
+					btd.setProductType(rs.getString("ProductType"));
+					btd.setPrice(rs.getInt("Price"));
+
+					budgetList.add(btd);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return budgetList;
+	}
+	
+	public List<BudgetTrackerDto> selectByDates(BudgetTrackerDto btd) throws FileNotFoundException, IOException {
+		List<BudgetTrackerDto> budgetList = new ArrayList<>();
+
+		try (Connection conn = BudgetTrackerDao.getConnection();
+			PreparedStatement ps = conn.prepareStatement(SELECTBYDATES)) {
+			btd = new BudgetTrackerDto();
+			Date date = btd.getDate();
+			long timeInMilliSeconds = date.getTime();
+			java.sql.Date sqlDate1 = new java.sql.Date(timeInMilliSeconds);
+			ps.setDate(1, sqlDate1);
+			Date date2 = btd.getDate2();
+			long timeInMilliSeconds2 = date2.getTime();
+			java.sql.Date sqlDate2 = new java.sql.Date(timeInMilliSeconds2);
+			ps.setDate(2, sqlDate2);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 
@@ -110,10 +178,7 @@ public class BudgetTrackerDao {
 			// DBに接続
 			myConn = BudgetTrackerDao.getConnection();
 
-			String sql = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) "
-					+ "VALUE (?,?,?,?,?,?)";
-
-			pstmt = myConn.prepareStatement(sql);
+			pstmt = myConn.prepareStatement(INSERTINTOBUDGETTABLE);
 			pstmt.setInt(1, btd.getId());
 			Date date = btd.getDate();
 			long timeInMilliSeconds = date.getTime();

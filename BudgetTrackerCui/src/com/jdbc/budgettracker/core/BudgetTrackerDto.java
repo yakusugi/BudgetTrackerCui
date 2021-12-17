@@ -34,8 +34,16 @@ public class BudgetTrackerDto {
     public Date getDate() {
         return date;
     }
+    
+    public Date getDate2() {
+        return date;
+    }
 
     public void setDate(Date insertDate) {
+        this.date = insertDate;
+    }
+    
+    public void setDate2(Date insertDate) {
         this.date = insertDate;
     }
 

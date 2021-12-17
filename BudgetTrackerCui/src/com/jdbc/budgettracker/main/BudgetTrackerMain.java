@@ -2,6 +2,7 @@ package com.jdbc.budgettracker.main;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Date;
 import java.text.ParseException;
@@ -11,7 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.sql.rowset.serial.SerialBlob;
+
+import java.io.File;
+import java.io.FileInputStream;
+
 import com.jdbc.budgettracker.core.BudgetTrackerDto;
+import com.jdbc.budgettracker.core.BudgetTrackerFileTableDto;
 import com.jdbc.budgettracker.dao.BudgetTrackerDao;
 
 public class BudgetTrackerMain {
@@ -21,6 +28,8 @@ public class BudgetTrackerMain {
 		// TODO Auto-generated method stub
 		BudgetTrackerDao budgetTrackerDao = null;
 		BudgetTrackerDto budgetTrackerDto = null;
+		BudgetTrackerFileTableDto budgetTrackerFileTableDto = null;
+		FileInputStream input = null;
 
 		Map<Integer, String> initialSwitchMap = new HashMap<>();
 		initialSwitchMap.put(1, "Select");
@@ -28,11 +37,10 @@ public class BudgetTrackerMain {
 		initialSwitchMap.put(3, "Update");
 		initialSwitchMap.put(4, "Delete");
 		initialSwitchMap.put(5, "Test");
+		initialSwitchMap.put(6, "Insert a PDF file");
 		Scanner initialSwitchScanner = new Scanner(System.in);
 		int initialNumInt = 0;
 		do {
-			// String[] initialList = new String[] {initialSwitchMap.get(1),
-			// initialSwitchMap.get(2), initialSwitchMap.get(3), initialSwitchMap.get(4)};
 
 			for (Map.Entry<Integer, String> list : initialSwitchMap.entrySet()) {
 				System.out.println(list.getKey() + ":" + list.getValue());
@@ -42,7 +50,7 @@ public class BudgetTrackerMain {
 			String initialNumStr = initialSwitchScanner.next();
 			initialNumInt = Integer.parseInt(initialNumStr);
 
-		} while (initialNumInt >= 5 || initialNumInt <= 0);
+		} while (initialNumInt >= 7 || initialNumInt <= 0);
 
 		switch (initialNumInt) {
 		case 1:
@@ -72,7 +80,7 @@ public class BudgetTrackerMain {
 				String selectScannerNumStr = selectScanner.next();
 				selectScannerNumInt = Integer.parseInt(selectScannerNumStr);
 
-			} while (selectScannerNumInt > 7 || selectScannerNumInt <= 0);
+			} while (selectScannerNumInt > 6 || selectScannerNumInt <= 0);
 
 			do {
 				if (selectScannerNumInt == 1) {
@@ -141,6 +149,7 @@ public class BudgetTrackerMain {
 			int insertcannerInt = 0;
 			System.out.println("You chose " + initialSwitchMap.get(2));
 			budgetTrackerDto = new BudgetTrackerDto();
+			
 
 			Scanner insertScanner = new Scanner(System.in);
 			System.out.print("Input an ID: ");
@@ -168,9 +177,32 @@ public class BudgetTrackerMain {
 			insertScannerStr = insertScanner.next();
 			insertcannerInt = Integer.parseInt(insertScannerStr);
 			budgetTrackerDto.setPrice(insertcannerInt);
-
+			
 			budgetTrackerDao = new BudgetTrackerDao();
 			budgetTrackerDao.insertIntoTable(budgetTrackerDto);
+
+			break;
+		case 3:
+			budgetTrackerFileTableDto = new BudgetTrackerFileTableDto();
+			
+			System.out.print("Input an ID: ");
+			Scanner insertScannerPdf = new Scanner(System.in);
+			int insertScannerInt2 = insertScannerPdf.nextInt();
+			budgetTrackerFileTableDto.setId(insertScannerInt2);
+			
+			
+			System.out.print("Input a file if you have: ");
+			insertScannerPdf = new Scanner(System.in);
+			insertScannerStr = insertScannerPdf.next();
+			File theFile = new File(insertScannerStr);
+			input = new FileInputStream(theFile);
+//			byte[] byteData = insertScannerStr.getBytes("UTF-8");
+//			Blob docInBlob = new SerialBlob(byteData);
+			budgetTrackerFileTableDto.setPdfFile(input);
+			
+			budgetTrackerDao = new BudgetTrackerDao();
+			budgetTrackerDao.insertIntoFileTable(budgetTrackerFileTableDto);
+			break;
 
 		}
 

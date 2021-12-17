@@ -1,8 +1,10 @@
 package com.jdbc.budgettracker.dao;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Properties;
 
 import com.jdbc.budgettracker.core.BudgetTrackerDto;
+import com.jdbc.budgettracker.core.BudgetTrackerFileTableDto;
 
 public class BudgetTrackerDao {
 	BudgetTrackerDto btd;
@@ -26,6 +29,7 @@ public class BudgetTrackerDao {
 	private static final String SELECTBYPRODUCTNAME = "select * from budget_table where productName = ?;";
 	private static final String SELECTBYDATES = "SELECT * FROM budget_table WHERE Date >= ? AND Date <= ?;";
 	private static final String INSERTINTOBUDGETTABLE = "INSERT INTO budget_table(id,Date,StoreName, ProductName, ProductType, Price) VALUE (?,?,?,?,?,?);";
+	private static final String INSERTINTOFILETABLE = "INSERT INTO file_table(id, file) VALUE (?,?);";
 
 	private static Connection getConnection() {
 
@@ -170,6 +174,7 @@ public class BudgetTrackerDao {
 		return budgetList;
 	}
 
+	//Insert
 	public int insertIntoTable(BudgetTrackerDto btd) throws SQLException {
 		int rowsCount = 0;
 
@@ -190,7 +195,50 @@ public class BudgetTrackerDao {
 			pstmt.setInt(6, btd.getPrice());
 			// SQL文発行
 			pstmt.executeUpdate();
-			System.out.println("Suucessfully added");
+			System.out.println("Successfully added");
+			pstmt.close();
+
+			// rowsCount = pstmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println("Errorが発生しました！\n" + e + "\n");
+		} finally {
+			// リソースの開放
+			if (mySmt != null) {
+				try {
+					mySmt.close();
+				} catch (SQLException ignore) {
+				}
+			}
+			if (myConn != null) {
+				try {
+					myConn.close();
+				} catch (SQLException ignore) {
+				}
+			}
+		}
+
+		return 0;
+
+	}
+	
+	//Insert into PDF table
+	public int insertIntoFileTable(BudgetTrackerFileTableDto budgetTrackerDto) throws SQLException, FileNotFoundException {
+		int rowsCount = 0;
+
+		PreparedStatement pstmt;
+		FileInputStream input = null;
+		try {
+			// DBに接続
+			myConn = BudgetTrackerDao.getConnection();
+
+			pstmt = myConn.prepareStatement(INSERTINTOFILETABLE);
+			pstmt.setInt(1, budgetTrackerDto.getId());
+
+			pstmt.setBinaryStream(2, (InputStream) budgetTrackerDto.getPdfFile());
+			
+			// SQL文発行
+			pstmt.executeUpdate();
+			System.out.println("Successfully added");
 			pstmt.close();
 
 			// rowsCount = pstmt.executeUpdate(sql);

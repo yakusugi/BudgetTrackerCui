@@ -16,7 +16,7 @@ public class CSVInsert {
     public static void main(String[] args) throws FileNotFoundException, IOException {
     	
     	Properties props = new Properties();
-        props.load(new FileInputStream("/home/yosuke/git/BudgetTrackerCui/BudgetTrackerCui/sql/config_budgettracker.properties"));
+        props.load(new FileInputStream("C:\\workspace_budget_tracker_cui_project\\BudgetTrackerCui\\BudgetTrackerCui\\sql\\config_budgettracker.properties"));
 
         String user = props.getProperty("user");
         String password = props.getProperty("password");
@@ -26,7 +26,7 @@ public class CSVInsert {
 //        String username="host_user";
 //        String password="Unity0216Access!";
 
-        String filePath="/home/yosuke/Downloads/budget_table.csv";
+        String filePath="C:\\Users\\deeps\\Documents\\Java\\LAMP2022\\csv_excel\\uszips.csv";
 
         int batchSize=20;
 
@@ -37,7 +37,7 @@ public class CSVInsert {
             connection= DriverManager.getConnection(dburl,user,password);
             connection.setAutoCommit(false);
 
-            String sql="insert into budget_table(id,Date,StoreName,ProductName, ProductType, Price) values(?,?,?,?,?,?)";
+            String sql="insert into locations_tbl(city,province,country,postal_code) values(?,?,?,?)";
 
             PreparedStatement statement=connection.prepareStatement(sql);
 
@@ -50,19 +50,15 @@ public class CSVInsert {
             while ((lineText=lineReader.readLine())!=null){
                 String[] data=lineText.split(",");
 
-                String id=data[0];
-                String Date=data[1];
-                String StoreName=data[2];
-                String ProductName=data[3];
-                String ProductType=data[4];
-                String Price=data[5];
+                String city=data[0];
+                String province=data[1];
+                String country=data[2];
+                String postal_code=data[3];
 
-                statement.setInt(1,parseInt(id));
-                statement.setString(2,parseString(Date));
-                statement.setString(3,StoreName);
-                statement.setString(4,ProductName);
-                statement.setString(5,ProductType);
-                statement.setInt(6,parseInt(Price));
+                statement.setString(1,city);
+                statement.setString(2,province);
+                statement.setString(3,country);
+                statement.setInt(4,parseInt(postal_code));
                 statement.addBatch();
                 
                 if(count%batchSize==0){

@@ -14,7 +14,7 @@ public class CSVInsert {
         String username="host_user";
         String password="Unity0216Access!";
 
-        String filePath="/home/yosuke/Documents/GDP.csv";
+        String filePath="C:\\Users\\deeps\\Documents\\Java\\LAMP2022\\csv_excel\\uszips.csv";
 
         int batchSize=20;
 
